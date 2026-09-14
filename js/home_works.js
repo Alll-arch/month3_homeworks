@@ -129,3 +129,110 @@ firstPromise
             console.log("Реджект 2:", nextErrorData);
         }
     );
+
+
+    function delay(value, ms, shouldFail = false) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      shouldFail ? reject(new Error(`Ошибка при обработке: ${value}`)) : resolve(value);
+    }, ms)   ;
+  });
+}
+
+console.log("Задание 1: Цепочка промисов с обработкой ошибок");
+
+delay(1, 500)
+  .then(res1 => {
+    console.log(`Шаг 1: ${res1}`);
+    return delay(res1 + 1, 500, true);   
+  })
+  .then(res2 => {
+    console.log(`Шаг 2: ${res2}`); 
+    return delay(res2 + 1, 500);
+  })
+  .catch(error => {
+    console.error(`Перехват в .catch: ${error.message}`); 
+  })
+  .finally(() => {
+    console.log(".finally сработает после завершения цепочки промисов, независимо от результата."); 
+  });
+
+async function runTask2() {
+  console.log("Старт Задания 2 Аналог цепочки");
+  try {
+    const res1 = await delay(1, 500);
+    console.log(`Шаг 1: ${res1}`);
+    
+    const res2 = await delay(res1 + 1, 500, true); 
+    console.log(`Шаг 2: ${res2}`);
+  } catch (error) {
+    console.error(`Перехват: ${error.message}`);
+  } finally {
+    console.log("finally сработал");
+  }
+
+  const items = [];
+  const results = [];
+
+  for (const item of items) {
+    const shouldFail = Math.random() > 0.7;
+    
+    try {
+      const value = await delay(item, 300, shouldFail);
+      results.push({ value, error: null });
+    } catch (error) {
+      results.push({ value: null, error: error.message });
+    }
+  }
+
+  console.log("Итоговый массив результатов:");
+  console.log(results);
+}
+setTimeout(runTask2, 1600);
+
+async function runTask3() {
+
+  console.log("тестируем Promise.all");
+  try {
+    await Promise.all([
+      delay("A", 200),
+      delay("B", 400, true), 
+      delay("C", 600),
+      delay("D", 100)
+    ]);
+  } catch (error) {
+    console.error(`Promise.all упал при первой же ошибке: ${error.message}`);
+  }
+
+  console.log("тестируем Promise.allSettled");
+  const rawResults = await Promise.allSettled([
+    delay("A", 200),
+    delay("B", 400, true),
+    delay("C", 600),
+    delay("D", 100)
+  ]);
+
+  const succeeded = rawResults
+    .filter(r => r.status === "fulfilled")
+    .map(r => r.value);
+
+  const failed = rawResults
+    .filter(r => r.status === "rejected")
+    .map(r => r.reason.message);
+
+  console.log("Успешные:", succeeded);
+  console.log("Упавшие:", failed);
+
+  console.log("тестируем Promise.race...");
+  try {
+    const winner = await Promise.race([
+      delay("Полезные данные", 2000),
+      delay("Таймаут соединения", 500, true) 
+    ]);
+    console.log(`Победил промис: ${winner}`); 
+  } catch (error) {
+    console.error(`В гонке победил сбой (быстрее 2000мс): ${error.message}`);
+  }
+}
+
+setTimeout(runTask3, 4000);
