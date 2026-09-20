@@ -236,3 +236,74 @@ async function runTask3() {
 }
 
 setTimeout(runTask3, 4000);
+
+const form = document.getElementById('userForm');
+const agreeCheckbox = document.getElementById('agree');
+const btnJson = document.getElementById('btnJson');
+const btnFormData = document.getElementById('btnFormData');
+const statusDiv = document.getElementById('status');
+
+const URL = 'https://jsonplaceholder.typicode.com/posts';
+
+agreeCheckbox.addEventListener('change', function() {
+    const isChecked = !this.checked;
+    btnJson.disabled = isChecked;
+    btnFormData.disabled = isChecked;
+});
+
+function showStatus(message, isSuccess = true) {
+    statusDiv.textContent = message;
+    statusDiv.className = isSuccess ? 'success' : 'error';
+}
+async function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+    }
+    return await response.json();
+}
+btnJson.addEventListener('click', async () => {
+    if (!form.reportValidity()) return; 
+    const formData = new FormData(form);
+    const dataObject = Object.fromEntries(formData.entries());
+    delete dataObject.agree; 
+
+    showStatus('Отправка JSON...', true);
+
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataObject)
+        });
+
+        const result = await handleResponse(response);
+        console.log('Ответ сервера (JSON):', result);
+        showStatus('Успешно отправлено в формате JSON! (Результат в консоли)');
+    } catch (error) {
+        console.error('Ошибка при отправке JSON:', error);
+        showStatus(`Не удалось отправить JSON. ${error.message}`, false);
+    }
+});
+
+btnFormData.addEventListener('click', async () => {
+    if (!form.reportValidity()) return; 
+    const formData = new FormData(form);
+
+    showStatus('Отправка FormData...', true);
+
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await handleResponse(response);
+        console.log('Ответ сервера (FormData):', result);
+        showStatus('Успешно отправлено в формате FormData! (Результат в консоли)');
+    } catch (error) {
+        console.error('Ошибка при отправке FormData:', error);
+        showStatus(`Не удалось отправить FormData. ${error.message}`, false);
+    }
+});

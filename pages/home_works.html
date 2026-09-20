@@ -43,6 +43,54 @@
                     <input type="text" id="gmail_input" placeholder="your gmail">
                     <button class="btn" id="gmail_button">Check gmail</button>
                     <span class="checker" id="gmail_result"></span>
+                    <form id="userForm">
+        <div class="form-group">
+            <label for="name">Имя:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Возраст:</label>
+            <input type="number" id="age" name="age" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Пол:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Выберите...</option>
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">О себе:</label>
+            <textarea id="bio" name="bio" rows="3"></textarea>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="agree" name="agree">
+            <label for="agree">Согласен на обработку персональных данных</label>
+        </div>
+
+        <div class="buttons">
+            <button type="button" id="btnJson" class="btn-json" disabled>Отправить JSON</button>
+            <button type="button" id="btnFormData" class="btn-formdata" disabled>Отправить FormData</button>
+        </div>
+    </form>
+
+    <div id="status"></div>
+
                 </div>
             </div>
         </div>
@@ -50,7 +98,6 @@
 
     <div class="move_block">
         <div class="container">
-            <h3>Homework 1 (part 2)</h3>
             <div class="inner_move_block">
                 <div class="parent_block">
                     <div class="child_block"></div>
