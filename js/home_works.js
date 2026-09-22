@@ -245,10 +245,9 @@ const statusDiv = document.getElementById('status');
 
 const URL = 'https://jsonplaceholder.typicode.com/posts';
 
-agreeCheckbox.addEventListener('change', function() {
-    const isChecked = !this.checked;
-    btnJson.disabled = isChecked;
-    btnFormData.disabled = isChecked;
+agreeCheckbox.addEventListener('change', function () {
+    btnJson.disabled = !this.checked;
+    btnFormData.disabled = !this.checked;
 });
 
 function showStatus(message, isSuccess = true) {
@@ -307,3 +306,4 @@ btnFormData.addEventListener('click', async () => {
         showStatus(`Не удалось отправить FormData. ${error.message}`, false);
     }
 });
+
